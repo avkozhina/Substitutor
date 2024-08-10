@@ -51,7 +51,7 @@ public class Main {
                         v.contains("null") ||
                         String.valueOf(parameters.get(k)).equals("true") ||
                         String.valueOf(parameters.get(k)).equals("false") ||
-                        String.valueOf(parameters.getOrDefault(k, "fasle")).equals("null")) {
+                        String.valueOf(parameters.getOrDefault(k, "false")).equals("null")) {
                     fullLine = fullLine.substring(fullLine.indexOf("${") - 1, fullLine.indexOf("}") + 2);
                 } else {
                     fullLine = fullLine.substring(fullLine.indexOf("${"), fullLine.indexOf("}") + 1);
