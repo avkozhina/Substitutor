@@ -29,7 +29,6 @@ public class Main {
         String sql = Files.readString(Path.of(pathSqlQuery));
         while (sql.contains("${")) {
             String fullLine = sql.substring(sql.indexOf("${") - 1, sql.indexOf("}") + 2);
-            System.out.println(fullLine);
             String v;
             String k;
             if (fullLine.contains(":-")) {
