@@ -1,9 +1,6 @@
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -29,7 +26,6 @@ public class Main {
         // Необходимо прочитать файл с sql запросом и подставить параметры.
         // При реализации метода учесть, что null и "null" должны корректно отображаться в результирующем запросе.
 
-
         String sql = Files.readString(Path.of(pathSqlQuery));
         while (sql.contains("${")) {
             String fullLine = sql.substring(sql.indexOf("${") - 1, sql.indexOf("}") + 2);
@@ -37,14 +33,12 @@ public class Main {
             String v;
             String k;
             if (fullLine.contains(":-")) {
-                 k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf(":-"));
-                 v = fullLine.substring(fullLine.indexOf(":-") + 2, fullLine.indexOf("}"));
+                k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf(":-"));
+                v = fullLine.substring(fullLine.indexOf(":-") + 2, fullLine.indexOf("}"));
+            } else {
+                k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf("}"));
+                v = "";
             }
-            else {
-                 k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf("}"));
-                 v = "";
-            }
-
             if (fullLine.contains("'${")) {
                 if (v.contains("true") ||
                         v.contains("false") ||
@@ -55,7 +49,6 @@ public class Main {
                     fullLine = fullLine.substring(fullLine.indexOf("${") - 1, fullLine.indexOf("}") + 2);
                 } else {
                     fullLine = fullLine.substring(fullLine.indexOf("${"), fullLine.indexOf("}") + 1);
-
                 }
             } else {
                 fullLine = fullLine.substring(fullLine.indexOf("${"), fullLine.indexOf("}") + 1);
@@ -63,21 +56,15 @@ public class Main {
             if (parameters.containsKey(k)) {
                 sql = sql.replace(fullLine, String.valueOf(parameters.get(k)));
             } else {
-                if (v.isEmpty())
-                {
+                if (v.isEmpty()) {
                     throw new Exception("В параметре " + k + " " + pathSqlQuery + " отсутствует значение");
-                }
-                else {
+                } else {
                     sql = sql.replace(fullLine, v);
                 }
             }
-
         }
         return sql;
-
-
     }
-
 
     /**
      * Выполним sql запрос из файла с подстановкой параметров
@@ -89,11 +76,9 @@ public class Main {
      */
     @Attachment(value = "query", fileExtension = ".sql", type = "text/plain")
     @Step("Выполним sql запрос из файла с подстановкой параметров")
-    public static void executeSqlQuery(java.util.Map<String, String> parametersSqlQuery, String
-            sqlQueryPath) throws Exception {
+    public static void executeSqlQuery(java.util.Map<String, String> parametersSqlQuery, String sqlQueryPath) throws Exception {
         //В оригинальной реализации здесь находится запрос,
         //который выполняется для подготовки данных к бд, его реализовывать не обязательно
-
         System.out.println(prepareSqlQuery(parametersSqlQuery, sqlQueryPath));
     }
 
