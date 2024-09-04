@@ -29,22 +29,22 @@ public class Main {
         String sql = Files.readString(Path.of(pathSqlQuery));
         while (sql.contains("${")) {
             String fullLine = sql.substring(sql.indexOf("${") - 1, sql.indexOf("}") + 2);
-            String v;
-            String k;
+            String value;
+            String key;
             if (fullLine.contains(":-")) {
-                k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf(":-"));
-                v = fullLine.substring(fullLine.indexOf(":-") + 2, fullLine.indexOf("}"));
+                key = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf(":-"));
+                value = fullLine.substring(fullLine.indexOf(":-") + 2, fullLine.indexOf("}"));
             } else {
-                k = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf("}"));
-                v = "";
+                key = fullLine.substring(fullLine.indexOf("{") + 1, fullLine.indexOf("}"));
+                value = "";
             }
             if (fullLine.contains("'${")) {
-                if (v.contains("true") ||
-                        v.contains("false") ||
-                        v.contains("null") ||
-                        String.valueOf(parameters.get(k)).equals("true") ||
-                        String.valueOf(parameters.get(k)).equals("false") ||
-                        String.valueOf(parameters.getOrDefault(k, "false")).equals("null")) {
+                if (value.contains("true") ||
+                        value.contains("false") ||
+                        value.contains("null") ||
+                        String.valueOf(parameters.get(key)).equals("true") ||
+                        String.valueOf(parameters.get(key)).equals("false") ||
+                        String.valueOf(parameters.getOrDefault(key, "false")).equals("null")) {
                     fullLine = fullLine.substring(fullLine.indexOf("${") - 1, fullLine.indexOf("}") + 2);
                 } else {
                     fullLine = fullLine.substring(fullLine.indexOf("${"), fullLine.indexOf("}") + 1);
@@ -52,13 +52,13 @@ public class Main {
             } else {
                 fullLine = fullLine.substring(fullLine.indexOf("${"), fullLine.indexOf("}") + 1);
             }
-            if (parameters.containsKey(k)) {
-                sql = sql.replace(fullLine, String.valueOf(parameters.get(k)));
+            if (parameters.containsKey(key)) {
+                sql = sql.replace(fullLine, String.valueOf(parameters.get(key)));
             } else {
-                if (v.isEmpty()) {
-                    throw new Exception("В параметре " + k + " " + pathSqlQuery + " отсутствует значение");
+                if (value.isEmpty()) {
+                    throw new Exception("В параметре " + key + " " + pathSqlQuery + " отсутствует значение");
                 } else {
-                    sql = sql.replace(fullLine, v);
+                    sql = sql.replace(fullLine, value);
                 }
             }
         }
